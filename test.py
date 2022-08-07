@@ -93,7 +93,6 @@ def exec_sql(querytext,conn):
 
         with conn.cursor() as cursor:
             cursor.execute(querytext)
-            data = cursor.fetchall()
             cursor.close()
         
         return "ok"
