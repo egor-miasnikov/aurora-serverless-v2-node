@@ -96,25 +96,12 @@ def exec_sql(querytext,conn):
             data = cursor.fetchall()
             cursor.close()
         
-        return data
+        return "ok"
         
     except ClientError as e:
         print(e)
         return 'ok'
         
-def exec_sql_once(querytext,conn):
-# Function to execute passed query text and return results
-    try:
-
-        with conn.cursor() as cursor:
-            cursor.execute(querytext)
-            cursor.close()
-        
-        return 'ok'
-        
-    except ClientError as e:
-        print(e)
-        raise
 
 def runonce (endpoint, username, password,schema):
     try:
@@ -123,8 +110,8 @@ def runonce (endpoint, username, password,schema):
         # Connect to the db endpoint
         conn = psycopg2.connect(host=host, user=username, password=password, dbname=schema)
         
-        exec_sql_once(query_runonce_create,conn)
-        exec_sql_once(query_runonce_cleanup,conn)
+        exec_sql(query_runonce_create,conn)
+        exec_sql(query_runonce_cleanup,conn)
 
         i=1
         for i in range (1,8,1):
@@ -208,7 +195,7 @@ def report_progress(endpoint, username, password):
 
         print ("""
   +-------------------------------+-------------------------------+
-  |         Status Activity Count |       Total Threads Started   |
+  |               Status Activity |       Total Threads Started   |
   +-------------------------------+-------------------------------+""")
         
         sys.stdout.flush()
@@ -225,10 +212,9 @@ def report_progress(endpoint, username, password):
             
             # Assemble final result
             result1="  |"
-            for i in range(0, len(result), 1):
-                for row in result[i]:
-                    spaces=(31-len(str(row)))*" "
-                    result1= result1+spaces+str(row)+"|"
+            
+            spaces=(31-len(str(result)))*" "
+            result1= result1+spaces+str(result)+"|"
             
             # total_thread_count variable needs to be thread safe
             with lock:
