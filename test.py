@@ -93,13 +93,14 @@ def exec_sql(querytext,conn):
 
         with conn.cursor() as cursor:
             cursor.execute(querytext)
+            conn.commit()
             cursor.close()
-        
+            
         return "ok"
         
     except ClientError as e:
         print(e)
-        return 'ok'
+        raise
         
 
 def runonce (endpoint, username, password,schema):
